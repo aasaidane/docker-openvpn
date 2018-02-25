@@ -163,7 +163,7 @@ OpenVPN with latest OpenSSL on Ubuntu 12.04 LTS).
 ### It Doesn't Stomp All Over the Server's Filesystem
 
 Everything for the Docker container is contained in two images: the ephemeral
-run time image (kylemanna/openvpn) and the `$OVPN_DATA` data volume. To remove
+run time image (aasaidane/openvpn) and the `$OVPN_DATA` data volume. To remove
 it, remove the corresponding containers, `$OVPN_DATA` data volume and Docker
 image and it's completely removed.  This also makes it easier to run multiple
 servers since each lives in the bubble of the container (of course multiple IPs
