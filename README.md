@@ -1,20 +1,11 @@
 # OpenVPN for Docker
 
-[![Build Status](https://travis-ci.org/kylemanna/docker-openvpn.svg)](https://travis-ci.org/kylemanna/docker-openvpn)
-[![Docker Stars](https://img.shields.io/docker/stars/kylemanna/openvpn.svg)](https://hub.docker.com/r/kylemanna/openvpn/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/kylemanna/openvpn.svg)](https://hub.docker.com/r/kylemanna/openvpn/)
-[![ImageLayers](https://images.microbadger.com/badges/image/kylemanna/openvpn.svg)](https://microbadger.com/#/images/kylemanna/openvpn)
-
-
 OpenVPN server in a Docker container complete with an EasyRSA PKI CA.
-
-Extensively tested on [Digital Ocean $5/mo node](http://bit.ly/1C7cKr3) and has
-a corresponding [Digital Ocean Community Tutorial](http://bit.ly/1AGUZkq).
 
 #### Upstream Links
 
-* Docker Registry @ [kylemanna/openvpn](https://hub.docker.com/r/kylemanna/openvpn/)
-* GitHub @ [kylemanna/docker-openvpn](https://github.com/kylemanna/docker-openvpn)
+* Docker Registry @ [aasaidane/openvpn](https://hub.docker.com/r/aasaidane/openvpn/)
+* GitHub @ [aasaidane/docker-openvpn](https://github.com/aasaidane/docker-openvpn)
 
 ## Quick Start
 
@@ -30,20 +21,20 @@ a corresponding [Digital Ocean Community Tutorial](http://bit.ly/1AGUZkq).
   private key used by the newly generated certificate authority.
 
         docker volume create --name $OVPN_DATA
-        docker run -v $OVPN_DATA:/etc/openvpn --rm kylemanna/openvpn ovpn_genconfig -u udp://VPN.SERVERNAME.COM
-        docker run -v $OVPN_DATA:/etc/openvpn --rm -it kylemanna/openvpn ovpn_initpki
+        docker run -v $OVPN_DATA:/etc/openvpn --rm aasaidane/openvpn ovpn_genconfig -u udp://VPN.SERVERNAME.COM
+        docker run -v $OVPN_DATA:/etc/openvpn --rm -it aasaidane/openvpn ovpn_initpki
 
 * Start OpenVPN server process
 
-        docker run -v $OVPN_DATA:/etc/openvpn -d -p 1194:1194/udp --cap-add=NET_ADMIN kylemanna/openvpn
+        docker run -v $OVPN_DATA:/etc/openvpn -d -p 1194:1194/udp --cap-add=NET_ADMIN aasaidane/openvpn
 
 * Generate a client certificate without a passphrase
 
-        docker run -v $OVPN_DATA:/etc/openvpn --rm -it kylemanna/openvpn easyrsa build-client-full CLIENTNAME nopass
+        docker run -v $OVPN_DATA:/etc/openvpn --rm -it aasaidane/openvpn easyrsa build-client-full CLIENTNAME nopass
 
 * Retrieve the client configuration with embedded certificates
 
-        docker run -v $OVPN_DATA:/etc/openvpn --rm kylemanna/openvpn ovpn_getclient CLIENTNAME > CLIENTNAME.ovpn
+        docker run -v $OVPN_DATA:/etc/openvpn --rm aasaidane/openvpn ovpn_getclient CLIENTNAME > CLIENTNAME.ovpn
 
 ## Next Steps
 
@@ -68,7 +59,7 @@ If you prefer to use `docker-compose` please refer to the [documentation](docs/d
 
 * Create an environment variable with the name DEBUG and value of 1 to enable debug output (using "docker -e").
 
-        docker run -v $OVPN_DATA:/etc/openvpn -p 1194:1194/udp --privileged -e DEBUG=1 kylemanna/openvpn
+        docker run -v $OVPN_DATA:/etc/openvpn -p 1194:1194/udp --privileged -e DEBUG=1 aasaidane/openvpn
 
 * Test using a client that has openvpn installed correctly
 
@@ -86,7 +77,7 @@ If you prefer to use `docker-compose` please refer to the [documentation](docs/d
 
 ## How Does It Work?
 
-Initialize the volume container using the `kylemanna/openvpn` image with the
+Initialize the volume container using the `aasaidane/openvpn` image with the
 included scripts to automatically generate:
 
 - Diffie-Hellman parameters
@@ -102,11 +93,11 @@ declares that directory as a volume. It means that you can start another
 container with the `-v` argument, and access the configuration.
 The volume also holds the PKI keys and certs so that it could be backed up.
 
-To generate a client certificate, `kylemanna/openvpn` uses EasyRSA via the
+To generate a client certificate, `aasaidane/openvpn` uses EasyRSA via the
 `easyrsa` command in the container's path.  The `EASYRSA_*` environmental
 variables place the PKI CA under `/etc/openvpn/pki`.
 
-Conveniently, `kylemanna/openvpn` comes with a script called `ovpn_getclient`,
+Conveniently, `aasaidane/openvpn` comes with a script called `ovpn_getclient`,
 which dumps an inline OpenVPN client configuration file.  This single file can
 then be given to a client for access to the VPN.
 
@@ -194,12 +185,3 @@ of a guarantee in the future.
   volume for re-use across containers
 * Addition of tls-auth for HMAC security
 
-## Originally Tested On
-
-* Docker hosts:
-  * server a [Digital Ocean](https://www.digitalocean.com/?refcode=d19f7fe88c94) Droplet with 512 MB RAM running Ubuntu 14.04
-* Clients
-  * Android App OpenVPN Connect 1.1.14 (built 56)
-     * OpenVPN core 3.0 android armv7a thumb2 32-bit
-  * OS X Mavericks with Tunnelblick 3.4beta26 (build 3828) using openvpn-2.3.4
-  * ArchLinux OpenVPN pkg 2.3.4-1
